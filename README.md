@@ -26,5 +26,6 @@ client_secret = 'client_secret'
 ```
 ## 用法
 ```shell
-python jc.py github仓库链接(不带.git) 下载文件夹
+python jc.py github_repo download_dir
 ```
+注意：github_repo不带.git
