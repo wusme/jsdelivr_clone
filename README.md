@@ -28,7 +28,3 @@ client_secret = 'client_secret'
 ```shell
 python jc.py github仓库链接(不带.git) 下载文件夹
 ```
-## usage
-```shell
-python jc.py github_repo(without '.git') download_dir
-```
