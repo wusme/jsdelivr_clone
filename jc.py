@@ -17,7 +17,12 @@ github_url = sys.argv[1]
 dir_ = sys.argv[2]
 github_key = '?client_id={}&client_secret={}'.format(client_id, client_secret)
 github_api1 = 'https://api.github.com/repos/{}'.format(github_url[19:])
-response = requests.get(github_api1 + github_key)
+while True:
+    try:
+        response = requests.get(github_api1 + github_key)
+        break
+    except Exception:
+        continue
 repo_id = json.loads(response.text)['id']
 github_api0 = 'https://api.github.com/repositories/{}/contents'.format(repo_id)
 finall_result = []
@@ -25,7 +30,12 @@ def filetree(url=None, nexts=None, dirs=[]):
     github_api2 = 'https://api.github.com/repositories/{}/contents'.format(repo_id)
     if nexts:
         github_api2 = url + '/' + nexts
-    repo_contents = json.loads(requests.get(github_api2 + github_key).text)
+    while True:
+        try:
+            repo_contents = json.loads(requests.get(github_api2 + github_key).text)
+            break
+        except Exception:
+            continue
     for file_content in repo_contents:
         if file_content['type'] != 'file':
             dirc = dirs.copy()
@@ -53,7 +63,13 @@ def download(dir_list, file_name):
     url += '/' + file_name
     print(url)
     with open(file_name, 'wb+') as this:
-        this.write(requests.get(url).content)
+        while True:
+            try:
+                response = requests.get(url).content
+                break
+            except Exception:
+                continue
+        this.write(response)
 
 def main(result):
     dirhandler1(result['dir_list'])
