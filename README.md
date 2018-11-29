@@ -19,8 +19,11 @@ git clone git@github.com:Ghosin/jsdelivr_clone.git
 ```shell
 pip install -r requirements.txt
 ```
- 
-依赖proxy_pool, 必须配置完毕并开启，方法见[proxy_pool](https://github.com/jhao104/proxy_pool)。  
+* 创建OAuth Apps，将client_id和client_secret填入config.py
+```Python
+client_id = 'client_id'
+client_secret = 'client_secret'
+```
 ## 用法
 ```shell
 python jc.py github仓库链接(不带.git) 下载文件夹
