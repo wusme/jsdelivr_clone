@@ -18,7 +18,7 @@ dir_ = sys.argv[2]
 github_key = '?client_id={}&client_secret={}'.format(client_id, client_secret)
 github_api1 = 'https://api.github.com/repos/{}'.format(github_url[19:])
 response = requests.get(github_api1 + github_key)
-repo_id = json.loads(response)['id']
+repo_id = json.loads(response.text)['id']
 github_api0 = 'https://api.github.com/repositories/{}/contents'.format(repo_id)
 finall_result = []
 def filetree(url=None, nexts=None, dirs=[]):
