@@ -3,62 +3,21 @@ import json
 import os
 import sys
 import multiprocessing
+from config import client_id, client_secret
 
-class Proxy_Util():
-    """
-    ------------------------
-    代理工具类
-    Proxy_Util
-    Proxy_Util.get(): return proxy
-    Proxy_Util.delete(proxy): delete proxy from proxy_pool
-    ------------------------
-    """
-    @staticmethod
-    def get():
-        return requests.get('http://127.0.0.1:5010/get').text
-    @staticmethod
-    def delete(proxy):
-        requests.get('http://127.0.0.1:5010/delete?proxy={proxy}'.format(proxy=proxy))
-
-class Proxy_Requests():
-    """
-    ------------------------
-    代理请求类
-    Proxy_Requests
-    Proxy_Requests.get(args): requests.get with proxy
-    ------------------------
-    """
-    @staticmethod
-    def get(url, content=False):
-        while True:
-            proxy = Proxy_Util.get()
-            proxies = {
-                'http': 'http://'+proxy,
-                'https': 'https://'+proxy,
-            }
-            try:
-                response = requests.get(url + '?client_id=3089d9053557ad5b7fe3&client_secret=0e3959b4749534a0f36ea09da0a57ec01d40d8b1', proxies, timeout=10)
-                if response.status_code == 200:
-                    if content == True:
-                        return response.content
-                    return response.text
-                else:
-                    print('Status_code: ' + str(response.status_code))
-                    continue
-            except requests.exceptions.RequestException:
-                Proxy_Util.delete(proxy)
-
+if len(client_id) == 0 or len(client_secret) == 0:
+    print('Please check config.py.')
+    exit(0)
 if len(sys.argv) != 3:
     print(r"""
     usage: python jc.py github-repo dir_name
     """)
-    exit()
+    exit(0)
 github_url = sys.argv[1]
 dir_ = sys.argv[2]
-# github_url = 'https://github.com/9bie/bilibili-video-downloader'
-# dir_ = 'testtest'
+github_key = '?client_id={}&client_secret={}'.format(client_id, client_secret)
 github_api1 = 'https://api.github.com/repos/{}'.format(github_url[19:])
-response = Proxy_Requests.get(github_api1)
+response = requests.get(github_api1 + github_key)
 repo_id = json.loads(response)['id']
 github_api0 = 'https://api.github.com/repositories/{}/contents'.format(repo_id)
 finall_result = []
@@ -66,12 +25,8 @@ def filetree(url=None, nexts=None, dirs=[]):
     github_api2 = 'https://api.github.com/repositories/{}/contents'.format(repo_id)
     if nexts:
         github_api2 = url + '/' + nexts
-    # time.sleep(2)
-    repo_contents = json.loads(Proxy_Requests.get(github_api2))
+    repo_contents = json.loads(requests.get(github_api2 + github_key).text)
     for file_content in repo_contents:
-        if not isinstance(file_content, dict):
-            print(file_content)
-            exit(0)
         if file_content['type'] != 'file':
             dirc = dirs.copy()
             dirc.append(file_content['name'])
@@ -91,8 +46,6 @@ def dirhandler2(dir_deep):
     for y in range(dir_deep):
         os.chdir('..')
 
-
-
 def download(dir_list, file_name):
     url = 'https://cdn.jsdelivr.net/gh/{}'.format(github_url[19:])
     for dir_name in dir_list:
@@ -100,7 +53,7 @@ def download(dir_list, file_name):
     url += '/' + file_name
     print(url)
     with open(file_name, 'wb+') as this:
-        this.write(Proxy_Requests.get(url, True))
+        this.write(requests.get(url).content)
 
 def main(result):
     dirhandler1(result['dir_list'])
@@ -113,10 +66,10 @@ if __name__ == '__main__':
     else:
         os.mkdir(dir_)
         os.chdir(dir_)
+    print('Please wait...')
     filetree()
-    pool = multiprocessing.Pool(8)
+    pool = multiprocessing.Pool()
     for result in finall_result:
-        # main(result)
         pool.apply_async(main, args=(result,))
     pool.close()
     pool.join()
