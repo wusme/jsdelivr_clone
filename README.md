@@ -1,5 +1,5 @@
 
-Autocard 
+jsdelivr_clone 
 ========
 [![](https://img.shields.io/badge/Powered%20by-Requests-green.svg)](http://www.python-requests.org)
 [![](https://img.shields.io/badge/language-Python-green.svg)](https://www.python.org)   
