@@ -20,7 +20,7 @@ git clone git@github.com:Ghosin/jsdelivr_clone.git
 pip install -r requirements.txt
 ```
  
-依赖[proxy_pool](https://github.com/jhao104/proxy_pool), 必须安装。  
+依赖proxy_pool, 必须配置完毕并开启，方法见[proxy_pool](https://github.com/jhao104/proxy_pool)。  
 ## 用法
 ```shell
 python jc.py github仓库链接(不带.git) 下载文件夹
